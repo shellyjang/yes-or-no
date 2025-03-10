@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Yes or No ✨</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            background-image: url('https://web.archive.org/web/20091027130429/http://es.geocities.com/k_nym/stars.gif');
+            background-color: #000033;
+        }
+
+        #answer {
+            font-size: 72px;
+            font-weight: bold;
+            color: #FFFFFF;
+            text-shadow: 
+                2px 2px 0 #FF00FF,
+                -2px -2px 0 #00FFFF;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    2px 2px 0 #FF00FF,
+                    -2px -2px 0 #00FFFF;
+            }
+            to {
+                text-shadow: 
+                    2px 2px 10px #FF00FF,
+                    -2px -2px 10px #00FFFF;
+            }
+        }
+
+        /* Classic marquee-style border */
+        #answer-container {
+            padding: 20px;
+            border: 3px solid #FFFFFF;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: borderColor 2s infinite;
+        }
+
+        @keyframes borderColor {
+            0% { border-color: #FF0000; }
+            33% { border-color: #00FF00; }
+            66% { border-color: #0000FF; }
+            100% { border-color: #FF0000; }
+        }
+    </style>
+</head>
+<body>
+    <div id="answer-container">
+        <div id="answer"></div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const answer = Math.random() < 0.5 ? 'Yes' : 'No';
+            document.getElementById('answer').textContent = answer;
+        }
+    </script>
+</body>
+</html>
