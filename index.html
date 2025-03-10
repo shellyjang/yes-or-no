@@ -24,6 +24,9 @@
                 2px 2px 0 #FF00FF,
                 -2px -2px 0 #00FFFF;
             animation: glow 1s ease-in-out infinite alternate;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
         }
 
         @keyframes glow {
@@ -45,6 +48,10 @@
             border: 3px solid #FFFFFF;
             background-color: rgba(0, 0, 0, 0.7);
             animation: borderColor 2s infinite;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @keyframes borderColor {
@@ -53,17 +60,143 @@
             66% { border-color: #0000FF; }
             100% { border-color: #FF0000; }
         }
+
+        /* Add styles for the question input */
+        #question-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #question-input {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 24px;
+            padding: 10px;
+            border: 2px solid #FFFFFF;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-right: 10px;
+            max-width: 80%;
+        }
+
+        #submit-btn {
+            font-family: "Comic Sans MS", cursive, sans-serif;
+            font-size: 20px;
+            padding: 10px 20px;
+            background-color: #FF00FF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #submit-btn:hover {
+            background-color: #CC00CC;
+        }
+
+        /* Add glitter animation styles */
+        @keyframes glitterSpin {
+            0% {
+                transform: rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(720deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .self-destruct {
+            animation: glitterSpin 0.2s ease-out forwards;
+        }
+
+        /* Enhanced sparkle effect */
+        .sparkle {
+            position: absolute;
+            width: 8px;  /* Larger particles */
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px 2px currentColor; /* Add glow effect */
+        }
+
+        @keyframes sparkleOut {
+            0% {
+                transform: translate(0, 0) scale(1.5);
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+                transform: translate(calc(var(--tx) * 0.5), calc(var(--ty) * 0.5)) scale(1);
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="answer-container">
+        <form id="question-form" onsubmit="getAnswer(event)">
+            <input type="text" id="question-input" placeholder="Ask a question..." required>
+            <button type="submit" id="submit-btn">Ask!</button>
+        </form>
         <div id="answer"></div>
     </div>
 
     <script>
-        window.onload = function() {
+        function createSparkles(x, y) {
+            const colors = ['#FF00FF', '#00FFFF', '#FFFFFF', '#FFD700', '#FF0000', '#00FF00'];
+            // Create multiple waves of sparkles
+            for (let wave = 0; wave < 3; wave++) {
+                setTimeout(() => {
+                    // More particles per wave
+                    for (let i = 0; i < 40; i++) {
+                        const sparkle = document.createElement('div');
+                        sparkle.className = 'sparkle';
+                        sparkle.style.left = x + 'px';
+                        sparkle.style.top = y + 'px';
+                        sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        sparkle.style.color = sparkle.style.backgroundColor; // For the glow effect
+                        
+                        // More dramatic random direction and distance
+                        const angle = (Math.random() * Math.PI * 2);
+                        const distance = 150 + Math.random() * 200; // Longer travel distance
+                        const tx = Math.cos(angle) * distance;
+                        const ty = Math.sin(angle) * distance;
+                        
+                        sparkle.style.setProperty('--tx', `${tx}px`);
+                        sparkle.style.setProperty('--ty', `${ty}px`);
+                        sparkle.style.animation = 'sparkleOut 1.5s ease-out forwards';
+                        
+                        document.body.appendChild(sparkle);
+                        setTimeout(() => sparkle.remove(), 1500);
+                    }
+                }, wave * 100); // Stagger the waves
+            }
+        }
+
+        function getAnswer(event) {
+            event.preventDefault();
+            const answerElement = document.getElementById('answer');
             const answer = Math.random() < 0.5 ? 'Yes' : 'No';
-            document.getElementById('answer').textContent = answer;
+            answerElement.textContent = answer;
+            answerElement.classList.remove('self-destruct');
+            
+            const rect = answerElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            setTimeout(() => {
+                answerElement.classList.add('self-destruct');
+                // Create multiple bursts of sparkles
+                createSparkles(centerX, centerY);
+                setTimeout(() => {
+                    answerElement.textContent = '';
+                    answerElement.classList.remove('self-destruct');
+                }, 1500);
+            }, 1000);
         }
     </script>
 </body>
